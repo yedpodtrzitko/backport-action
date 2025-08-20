@@ -1,0 +1,31 @@
+name: Conditional tests
+
+on:
+    pull_request:
+        types:
+            - synchronize
+            - opened
+            - reopened
+    push:
+        branches:
+            - main
+            - develop
+            - release-*
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Running tests
+              if: github.event_name != 'push' || github.ref_name != 'main'
+              run: |
+                  echo "Running tests"
+    deploy:
+        runs-on: ubuntu-latest
+        needs:
+            - test
+        steps:
+            - name: Deploy to production
+              run: |
+                  echo "Deploying to production"
+                  exit 0
